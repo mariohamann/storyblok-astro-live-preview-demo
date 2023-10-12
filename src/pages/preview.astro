@@ -1,5 +1,5 @@
 ---
-console.log("preview");
+// console.log("preview");
 ---
 
 <!doctype html>
@@ -33,7 +33,7 @@ console.log("preview");
 
 			function iframeLoaded(event) {
 				if (event.data && event.data.type === "iframeLoaded") {
-					console.log("Received iframeLoaded message:", event.data);
+					// console.log("Received iframeLoaded message:", event.data);
 
 					const allIframes = document.body.querySelectorAll("iframe");
 					const newIframe = allIframes[allIframes.length - 1];
@@ -67,9 +67,6 @@ console.log("preview");
 			const startUrl = window.location.href.replace("/preview?", "/?");
 
 			const getAstroPage = async (content) => {
-				// fetch with POST request and example content
-				console.log(content, !!content);
-
 				const result = await fetch(
 					startUrl,
 					content
@@ -86,14 +83,14 @@ console.log("preview");
 				const html = await result.text();
 
 				return html;
-				console.log("HTML:", html);
+				// console.log("HTML:", html);
 			};
 
 			let initialIframe = null;
 
 			const createInitialIFrame = async () => {
 				if (initialIframe) return;
-				console.log("Creating initial iframe");
+				// console.log("Creating initial iframe");
 				initialIframe = document.createElement("iframe");
 				initialIframe.srcdoc = await getAstroPage();
 				initialIframe.style.display = "block";
@@ -106,9 +103,9 @@ console.log("preview");
 			window.addEventListener(
 				"interceptedStoryblokEvent",
 				async (event) => {
-					console.log("Received interceptedStoryblokEvent:", event);
+					// console.log("Received interceptedStoryblokEvent:", event);
 					if (event.detail.action !== "input") {
-						// window.reload();
+						window.reload();
 					} else {
 						await updatePage(event.detail.story);
 					}

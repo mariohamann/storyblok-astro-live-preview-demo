@@ -9,7 +9,7 @@ const { data } = await storyblokApi.get("cdn/stories/home", {
 });
 
 if (Astro.locals["_storybook_preview"]) {
-	console.log(Astro.locals["_storybook_preview"], data.story);
+	// console.log(Astro.locals["_storybook_preview"], data.story);
 	data.story = Astro.locals["_storybook_preview"];
 }
 
