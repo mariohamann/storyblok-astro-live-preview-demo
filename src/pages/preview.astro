@@ -1,0 +1,125 @@
+---
+console.log("preview");
+---
+
+<!doctype html>
+<html lang='en'>
+	<head>
+		<meta charset='UTF-8' />
+		<meta name='viewport' content='width=device-width' />
+		<link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+		<meta name='generator' content={Astro.generator} />
+		<title>Preview</title>
+
+		<style is:global>
+			body {
+				margin: 0;
+				padding: 0;
+			}
+			iframe {
+				width: 100%;
+				height: 100vh;
+				border: none;
+				position: absolute;
+			}
+			iframe:not(:first-of-type) {
+				opacity: 0%;
+			}
+		</style>
+	</head>
+	<body>
+		<script>
+			window.addEventListener("message", iframeLoaded, false);
+
+			function iframeLoaded(event) {
+				if (event.data && event.data.type === "iframeLoaded") {
+					console.log("Received iframeLoaded message:", event.data);
+
+					const allIframes = document.body.querySelectorAll("iframe");
+					const newIframe = allIframes[allIframes.length - 1];
+					const prevIframe =
+						allIframes.length > 1
+							? allIframes[allIframes.length - 2]
+							: null;
+
+					// Set scroll position from previous iframe if available
+					if (prevIframe) {
+						newIframe.contentWindow.scrollTo(
+							0,
+							prevIframe.contentWindow.scrollY
+						);
+					}
+
+					// Make new iframe visible
+					newIframe.style.display = "block";
+
+					// Hide and optionally remove old iframes
+					allIframes.forEach((iframe, index) => {
+						if (index < allIframes.length - 1) {
+							// All iframes except the last
+							iframe.style.display = "none";
+							iframe.remove(); // Uncomment to remove old iframes from DOM
+						}
+					});
+				}
+			}
+
+			const startUrl = window.location.href.replace("/preview?", "/?");
+
+			const getAstroPage = async (content) => {
+				// fetch with POST request and example content
+				console.log(content, !!content);
+
+				const result = await fetch(
+					startUrl,
+					content
+						? {
+								method: "POST",
+								body: JSON.stringify(content),
+								headers: {
+									"Content-Type": "application/json",
+								},
+						  }
+						: { method: "GET" }
+				);
+
+				const html = await result.text();
+
+				return html;
+				console.log("HTML:", html);
+			};
+
+			let initialIframe = null;
+
+			const createInitialIFrame = async () => {
+				if (initialIframe) return;
+				console.log("Creating initial iframe");
+				initialIframe = document.createElement("iframe");
+				initialIframe.srcdoc = await getAstroPage();
+				initialIframe.style.display = "block";
+				document.body.appendChild(initialIframe);
+			};
+
+			await createInitialIFrame();
+
+			// listen to CustomEvent("interceptedStoryblokEvent", { detail: event }); and update iframe
+			window.addEventListener(
+				"interceptedStoryblokEvent",
+				async (event) => {
+					console.log("Received interceptedStoryblokEvent:", event);
+					if (event.detail.action !== "input") {
+						// window.reload();
+					} else {
+						await updatePage(event.detail.story);
+					}
+				}
+			);
+
+			const updatePage = async function (story) {
+				const iframe = document.createElement("iframe");
+				iframe.srcdoc = await getAstroPage(story);
+				document.body.appendChild(iframe);
+			};
+		</script>
+	</body>
+</html>
