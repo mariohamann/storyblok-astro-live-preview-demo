@@ -1,7 +1,6 @@
 ---
 import { useStoryblokApi } from "@storyblok/astro";
 import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
-import BaseLayout from "../layouts/BaseLayout.astro";
 
 const storyblokApi = useStoryblokApi();
 const { data } = await storyblokApi.get("cdn/stories/home", {
@@ -16,6 +15,82 @@ if (Astro.locals["_storybook_preview"]) {
 const story = data.story;
 ---
 
-<BaseLayout>
-	<StoryblokComponent blok={story.content} />
-</BaseLayout>
+<html lang='en'>
+	<head>
+		<script>
+			(function () {
+				// Intercept postMessage calls
+				const originalPostMessage = window.parent.postMessage;
+				const originalMessage = window.postMessage;
+
+				window.parent.postMessage = function (message, targetOrigin) {
+					console.log("index: window.parent.postMessage", message);
+					originalPostMessage(message, "*");
+				};
+
+				window.postMessage = function (message, targetOrigin) {
+					console.log("index: window.postMessage", message);
+					originalMessage(message, "*");
+				};
+			})();
+		</script>
+		<meta charset='UTF-8' />
+		<meta name='viewport' content='width=device-width' />
+		<link rel='icon' type='image/x-icon' href='/favicon.ico' />
+		<title>The Storyblok Astro Ultimate Tutorial: Part 1</title>
+
+		<script
+			async=''
+			src='https://app.storyblok.com/f/storyblok-v2-latest.js'
+			id='storyblok-javascript-bridge'></script>
+		<script>
+			window.addEventListener("load", (event) => {
+				// console.log("Nested-Preview iframe is fully loaded");
+				// wait for 1 second
+				setTimeout(() => {
+					// send message to parent window
+					window.parent.postMessage({ type: "iframeLoaded" }, "*");
+				}, 100);
+			});
+
+			// window.addEventListener("message", function (event) {
+			// 	console.log("Message received from " + event.origin, event); // Message received from child
+			// });
+		</script>
+		<script>
+			import { loadStoryblokBridge } from "@storyblok/js";
+
+			console.log("Storyblok Bridge initialized");
+			loadStoryblokBridge().then(() => {
+				const { StoryblokBridge, location } = window;
+				const storyblokInstance = new StoryblokBridge();
+
+				storyblokInstance.on(
+					[
+						"published",
+						"change",
+						"input",
+						"enterEditmode",
+						"customEvent",
+						"unpublished",
+					],
+					(event) => {
+						if (!event.slugChanged) {
+							console.log("storyblokIntegration", event);
+							const storyblokEvent = new CustomEvent(
+								"interceptedStoryblokEvent",
+								{
+									detail: event,
+								}
+							);
+							window.dispatchEvent(storyblokEvent);
+						}
+					}
+				);
+			});
+		</script>
+	</head>
+	<body class='container mx-auto'>
+		<StoryblokComponent blok={story.content} />
+	</body>
+</html>

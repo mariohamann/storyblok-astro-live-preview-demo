@@ -5,6 +5,23 @@
 <!doctype html>
 <html lang='en'>
 	<head>
+		<script>
+			(function () {
+				// Intercept postMessage calls
+				const originalPostMessage = window.parent.postMessage;
+				const originalMessage = window.postMessage;
+
+				window.parent.postMessage = function (message, targetOrigin) {
+					console.log("preview sends", message);
+					originalPostMessage(message, "*");
+				};
+
+				window.postMessage = function (message, targetOrigin) {
+					console.log("preview sends", message);
+					originalMessage(message, "*");
+				};
+			})();
+		</script>
 		<meta charset='UTF-8' />
 		<meta name='viewport' content='width=device-width' />
 		<link rel='icon' type='image/svg+xml' href='/favicon.svg' />
@@ -103,7 +120,7 @@
 			window.addEventListener(
 				"interceptedStoryblokEvent",
 				async (event) => {
-					// console.log("Received interceptedStoryblokEvent:", event);
+					console.log("Received interceptedStoryblokEvent:", event);
 					if (event.detail.action !== "input") {
 						window.reload();
 					} else {
@@ -117,6 +134,26 @@
 				iframe.srcdoc = await getAstroPage(story);
 				document.body.appendChild(iframe);
 			};
+
+			window.addEventListener("message", async function (event) {
+				if (event.origin !== "https://app.storyblok.com") {
+					console.log("⏫ from index", event);
+					window.parent.postMessage(event.data, "*");
+				} else {
+					console.log("⏬ from storyblok", event);
+					// select available iframe and send postmessage into it
+					const allIframes = document.body.querySelectorAll("iframe");
+					const iframe = allIframes[allIframes.length - 1];
+					if (event.data.action === "input") {
+						await updatePage(event.data.story);
+					} else if (
+						["published", "unpublished"].includes(event.data.action)
+					) {
+						location.reload();
+					}
+					iframe.contentWindow.postMessage(event.data, "*");
+				}
+			});
 		</script>
 	</body>
 </html>
