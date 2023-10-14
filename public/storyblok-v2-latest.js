@@ -393,7 +393,7 @@
       if (!this.overlay.contains(e)) {
         if (this.handleDeselectBlock(),
           // in the generated iframe there is no "_storyblok" url param, as the iframe is generated vie srcdoc
-          !t && (!n("_storyblok") || this.storyId === n("_storyblok")))
+          !t && (this.storyId === n("_storyblok")))
           return e.setAttribute("data-blok-focused", !0),
             this.showFocusedElement(this.overlay),
             void (this.focusState = !1);

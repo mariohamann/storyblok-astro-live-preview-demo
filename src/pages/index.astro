@@ -7,9 +7,12 @@ const { data } = await storyblokApi.get("cdn/stories/home", {
 	version: "draft",
 });
 
+let storyId = "";
+
 if (Astro.locals["_storybook_preview"]) {
 	// console.log(Astro.locals["_storybook_preview"], data.story);
 	data.story = Astro.locals["_storybook_preview"];
+	storyId = data.story.id;
 }
 
 const story = data.story;
@@ -17,6 +20,24 @@ const story = data.story;
 
 <html lang='en'>
 	<head>
+		<script define:vars={{ storyId }}>
+		if (storyId) {
+		  // if location.search doesn't contain _storyblok, add it
+		  if (!location.search.includes("_storyblok")) {
+		    // if it doesn't contain any query params, add _storyblok
+		    if (!location.search) {
+		      location.search = `_storyblok=${storyId}`;
+		    } else {
+		      // if it contains other query params, add _storyblok after the first one
+		      location.search = location.search.replace(
+		        "?",
+		        `?_storyblok=${storyId}&`
+		      );
+		    }
+		  }
+		}
+		</script>
+
 		<script>
 			(function () {
 				// Intercept postMessage calls
@@ -39,10 +60,6 @@ const story = data.story;
 		<link rel='icon' type='image/x-icon' href='/favicon.ico' />
 		<title>The Storyblok Astro Ultimate Tutorial: Part 1</title>
 
-		<script
-			async=''
-			src='https://app.storyblok.com/f/storyblok-v2-latest.js'
-			id='storyblok-javascript-bridge'></script>
 		<script>
 			window.addEventListener("load", (event) => {
 				// console.log("Nested-Preview iframe is fully loaded");
