@@ -46,6 +46,8 @@
 	</head>
 	<body>
 		<script>
+			import { fetchAstroPage } from "./fetch-astro-page.js";
+
 			window.addEventListener("message", iframeLoaded, false);
 
 			function iframeLoaded(event) {
@@ -81,35 +83,13 @@
 				}
 			}
 
-			const startUrl = window.location.href.replace("/preview?", "/?");
-
-			const getAstroPage = async (content) => {
-				const result = await fetch(
-					startUrl,
-					content
-						? {
-								method: "POST",
-								body: JSON.stringify(content),
-								headers: {
-									"Content-Type": "application/json",
-								},
-						  }
-						: { method: "GET" }
-				);
-
-				const html = await result.text();
-
-				return html;
-				// console.log("HTML:", html);
-			};
-
 			let initialIframe = null;
 
 			const createInitialIFrame = async () => {
 				if (initialIframe) return;
 				// console.log("Creating initial iframe");
 				initialIframe = document.createElement("iframe");
-				initialIframe.srcdoc = await getAstroPage();
+				initialIframe.srcdoc = await fetchAstroPage();
 				initialIframe.style.display = "block";
 				document.body.appendChild(initialIframe);
 			};
@@ -129,18 +109,18 @@
 				}
 			);
 
-			const updatePage = async function (story) {
-				const iframe = document.createElement("iframe");
-				iframe.srcdoc = await getAstroPage(story);
-				document.body.appendChild(iframe);
-			};
-
 			window.addEventListener("message", async function (event) {
 				if (event.origin !== "https://app.storyblok.com") {
-					console.log("⏫ from index", event);
-					window.parent.postMessage(event.data, "*");
+					console.log(
+						"⏫ forwarding message from nested iFrame to Storyblok",
+						event
+					);
+					window.parent.postMessage(event.data, "*"); // This could be more secure
 				} else {
-					console.log("⏬ from storyblok", event);
+					console.log(
+						"⏬ forwarding message from Storyblok to nested iFrame",
+						event
+					);
 					// select available iframe and send postmessage into it
 					const allIframes = document.body.querySelectorAll("iframe");
 					const iframe = allIframes[allIframes.length - 1];
@@ -154,6 +134,12 @@
 					iframe.contentWindow.postMessage(event.data, "*");
 				}
 			});
+
+			const updatePage = async function (story) {
+				const iframe = document.createElement("iframe");
+				iframe.srcdoc = await fetchAstroPage(story);
+				document.body.appendChild(iframe);
+			};
 		</script>
 	</body>
 </html>

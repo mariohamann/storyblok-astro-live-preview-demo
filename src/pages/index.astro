@@ -9,9 +9,8 @@ const { data } = await storyblokApi.get("cdn/stories/home", {
 
 let storyId = "";
 
-if (Astro.locals["_storybook_preview"]) {
-	// console.log(Astro.locals["_storybook_preview"], data.story);
-	data.story = Astro.locals["_storybook_preview"];
+if (Astro.locals["_storybook_preview_data"]) {
+	data.story = Astro.locals["_storybook_preview_data"];
 	storyId = data.story.id;
 }
 
