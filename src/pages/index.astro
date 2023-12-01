@@ -21,21 +21,21 @@ const story = data.story;
 <html lang='en'>
 	<head>
 		<script define:vars={{ storyId }}>
-		if (storyId) {
-		  // if location.search doesn't contain _storyblok, add it
-		  if (!location.search.includes("_storyblok")) {
-		    // if it doesn't contain any query params, add _storyblok
-		    if (!location.search) {
-		      location.search = `_storyblok=${storyId}`;
-		    } else {
-		      // if it contains other query params, add _storyblok after the first one
-		      location.search = location.search.replace(
-		        "?",
-		        `?_storyblok=${storyId}&`
-		      );
-		    }
-		  }
-		}
+			if (storyId) {
+				// if location.search doesn't contain _storyblok, add it
+				if (!location.search.includes("_storyblok")) {
+					// if it doesn't contain any query params, add _storyblok
+					if (!location.search) {
+						location.search = `_storyblok=${storyId}`;
+					} else {
+						// if it contains other query params, add _storyblok after the first one
+						location.search = location.search.replace(
+							"?",
+							`?_storyblok=${storyId}&`
+						);
+					}
+				}
+			}
 		</script>
 
 		<script>
@@ -69,10 +69,6 @@ const story = data.story;
 					window.parent.postMessage({ type: "iframeLoaded" }, "*");
 				}, 100);
 			});
-
-			// window.addEventListener("message", function (event) {
-			// 	console.log("Message received from " + event.origin, event); // Message received from child
-			// });
 		</script>
 		<script>
 			import { loadStoryblokBridge } from "@storyblok/js";
