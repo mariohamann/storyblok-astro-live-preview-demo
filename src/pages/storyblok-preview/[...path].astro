@@ -5,23 +5,6 @@
 <!doctype html>
 <html lang='en'>
 	<head>
-		<script>
-			(function () {
-				// Intercept postMessage calls
-				const originalPostMessage = window.parent.postMessage;
-				const originalMessage = window.postMessage;
-
-				window.parent.postMessage = function (message, targetOrigin) {
-					console.log("preview sends", message);
-					originalPostMessage(message, "*");
-				};
-
-				window.postMessage = function (message, targetOrigin) {
-					console.log("preview sends", message);
-					originalMessage(message, "*");
-				};
-			})();
-		</script>
 		<meta charset='UTF-8' />
 		<meta name='viewport' content='width=device-width' />
 		<link rel='icon' type='image/svg+xml' href='/favicon.svg' />
