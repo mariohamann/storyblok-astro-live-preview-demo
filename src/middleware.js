@@ -1,8 +1,6 @@
 export function onRequest({ locals, request, context, params }, next) {
   // intercept response data from a request
   // optionally, transform the response by modifying `locals`
-  // locals.title = "New title";
-  // console.log(request, locals, context, params);
 
   const symbols = Object.getOwnPropertySymbols(request);
   let body;
@@ -12,7 +10,6 @@ export function onRequest({ locals, request, context, params }, next) {
       break;
     }
   }
-  // console.log(request);
 
   function getNestedProperty(obj, ...props) {
     return props.reduce((prev, prop) => (prev && prev[prop]) ? prev[prop] : null, obj);

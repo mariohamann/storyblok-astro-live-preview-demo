@@ -12,13 +12,13 @@
   "devDependencies": {
     "@astrojs/tailwind": "^5.0.2",
     "@vitejs/plugin-basic-ssl": "^1.0.1",
-    "astro": "^3.2.4",
-    "tailwindcss": "^3.3.3",
-    "vite": "^4.4.11"
+    "astro": "^3.4.3",
+    "tailwindcss": "^3.3.5",
+    "vite": "^4.5.0"
   },
   "dependencies": {
     "@astrojs/node": "^6.0.3",
-    "@storyblok/astro": "^3.0.1",
+    "@storyblok/astro": "./@storyblok-astro/lib",
     "@storyblok/js": "^2.3.0"
   }
 }

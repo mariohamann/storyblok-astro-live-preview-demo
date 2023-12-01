@@ -1,5 +1,6 @@
 # build output
 dist/
+!@storyblok-astro/lib/dist
 # generated types
 .astro/
 
