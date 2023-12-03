@@ -9,6 +9,7 @@ const { data } = await storyblokApi.get("cdn/stories/home", {
 
 let storyId = "";
 
+// Override the original Story data with date coming from the editor through middleware.js
 if (Astro.locals["_storybook_preview_data"]) {
 	data.story = Astro.locals["_storybook_preview_data"];
 	storyId = data.story.id;
