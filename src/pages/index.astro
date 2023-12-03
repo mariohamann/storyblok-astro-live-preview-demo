@@ -19,7 +19,20 @@ const story = data.story;
 
 <html lang='en'>
 	<head>
+		<script></script>
+		<meta charset='UTF-8' />
+		<meta name='viewport' content='width=device-width' />
+		<link rel='icon' type='image/x-icon' href='/favicon.ico' />
+		<title>The Storyblok Astro Ultimate Tutorial: Part 1</title>
+
+		<script>
+			import { setupLoadListener } from "./storyblok-preview/iframe-manager.js";
+			import { setupMessageInterceptor } from "./storyblok-preview/event-handler.js";
+			setupLoadListener();
+			setupMessageInterceptor();
+		</script>
 		<script define:vars={{ storyId }}>
+			// This block is needed to let Storyblok manager work, as it is looking for the parameter in the URL
 			if (storyId) {
 				// if location.search doesn't contain _storyblok, add it
 				if (!location.search.includes("_storyblok")) {
@@ -35,39 +48,6 @@ const story = data.story;
 					}
 				}
 			}
-		</script>
-
-		<script>
-			(function () {
-				// Intercept postMessage calls
-				const originalPostMessage = window.parent.postMessage;
-				const originalMessage = window.postMessage;
-
-				window.parent.postMessage = function (message, targetOrigin) {
-					console.log("index: window.parent.postMessage", message);
-					originalPostMessage(message, "*");
-				};
-
-				window.postMessage = function (message, targetOrigin) {
-					console.log("index: window.postMessage", message);
-					originalMessage(message, "*");
-				};
-			})();
-		</script>
-		<meta charset='UTF-8' />
-		<meta name='viewport' content='width=device-width' />
-		<link rel='icon' type='image/x-icon' href='/favicon.ico' />
-		<title>The Storyblok Astro Ultimate Tutorial: Part 1</title>
-
-		<script>
-			window.addEventListener("load", (event) => {
-				// console.log("Nested-Preview iframe is fully loaded");
-				// wait for 1 second
-				setTimeout(() => {
-					// send message to parent window
-					window.parent.postMessage({ type: "iframeLoaded" }, "*");
-				}, 100);
-			});
 		</script>
 		<script>
 			import { loadStoryblokBridge } from "@storyblok/js";
@@ -87,16 +67,8 @@ const story = data.story;
 						"unpublished",
 					],
 					(event) => {
-						if (!event.slugChanged) {
-							console.log("storyblokIntegration", event);
-							const storyblokEvent = new CustomEvent(
-								"interceptedStoryblokEvent",
-								{
-									detail: event,
-								}
-							);
-							window.dispatchEvent(storyblokEvent);
-						}
+						// I've dispatched events here, but they didn't seem to be necessary.
+						return;
 					}
 				);
 			});

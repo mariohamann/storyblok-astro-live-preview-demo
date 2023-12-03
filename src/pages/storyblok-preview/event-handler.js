@@ -23,3 +23,17 @@ async function handleMessageEvent(event) {
     iframe.contentWindow.postMessage(event.data, "*");
   }
 }
+
+export function setupMessageInterceptor() {
+  // Intercept postMessage calls
+  const originalPostMessage = window.parent.postMessage;
+  const originalMessage = window.postMessage;
+
+  window.parent.postMessage = function (message, targetOrigin) {
+    originalPostMessage(message, "*");
+  };
+
+  window.postMessage = function (message, targetOrigin) {
+    originalMessage(message, "*");
+  };
+}

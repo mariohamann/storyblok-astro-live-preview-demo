@@ -1,6 +1,10 @@
 // iframeManager.js
 import { fetchAstroPage } from "./fetch-astro-page.js";
 
+/**
+ * 1. Needed in "storyblok-preview"
+ */
+
 export async function createInitialIFrame() {
   const initialIframe = document.createElement("iframe");
   initialIframe.srcdoc = await fetchAstroPage();
@@ -38,4 +42,17 @@ export function iframeLoaded(event) {
 
 export function setupIFrameListeners() {
   window.addEventListener("message", iframeLoaded, false);
+}
+
+/**
+ * 2. Needed in original page (nested iFrame)
+ */
+
+export function setupLoadListener() {
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      // send message to parent window so that the iFrames can be swapped
+      window.parent.postMessage({ type: "iframeLoaded" }, "*");
+    }, 100);
+  });
 }
