@@ -29,100 +29,19 @@
 	</head>
 	<body>
 		<script>
-			import { fetchAstroPage } from "./fetch-astro-page.js";
+			import {
+				createInitialIFrame,
+				setupIFrameListeners,
+			} from "./iframe-manager.js";
+			import { setupEventListener } from "./event-handler.js";
 
-			window.addEventListener("message", iframeLoaded, false);
-
-			function iframeLoaded(event) {
-				if (event.data && event.data.type === "iframeLoaded") {
-					// console.log("Received iframeLoaded message:", event.data);
-
-					const allIframes = document.body.querySelectorAll("iframe");
-					const newIframe = allIframes[allIframes.length - 1];
-					const prevIframe =
-						allIframes.length > 1
-							? allIframes[allIframes.length - 2]
-							: null;
-
-					// Set scroll position from previous iframe if available
-					if (prevIframe) {
-						newIframe.contentWindow.scrollTo(
-							0,
-							prevIframe.contentWindow.scrollY
-						);
-					}
-
-					// Make new iframe visible
-					newIframe.style.display = "block";
-
-					// Hide and optionally remove old iframes
-					allIframes.forEach((iframe, index) => {
-						if (index < allIframes.length - 1) {
-							// All iframes except the last
-							iframe.style.display = "none";
-							iframe.remove(); // Uncomment to remove old iframes from DOM
-						}
-					});
-				}
+			async function init() {
+				await createInitialIFrame();
+				setupIFrameListeners();
+				setupEventListener();
 			}
 
-			let initialIframe = null;
-
-			const createInitialIFrame = async () => {
-				if (initialIframe) return;
-				// console.log("Creating initial iframe");
-				initialIframe = document.createElement("iframe");
-				initialIframe.srcdoc = await fetchAstroPage();
-				initialIframe.style.display = "block";
-				document.body.appendChild(initialIframe);
-			};
-
-			await createInitialIFrame();
-
-			// listen to CustomEvent("interceptedStoryblokEvent", { detail: event }); and update iframe
-			window.addEventListener(
-				"interceptedStoryblokEvent",
-				async (event) => {
-					console.log("Received interceptedStoryblokEvent:", event);
-					if (event.detail.action !== "input") {
-						window.reload();
-					} else {
-						await updatePage(event.detail.story);
-					}
-				}
-			);
-
-			window.addEventListener("message", async function (event) {
-				if (event.origin !== "https://app.storyblok.com") {
-					console.log(
-						"⏫ forwarding message from nested iFrame to Storyblok",
-						event
-					);
-					window.parent.postMessage(event.data, "*"); // This could be more secure
-				} else {
-					console.log(
-						"⏬ forwarding message from Storyblok to nested iFrame",
-						event
-					);
-					// select available iframe and send postmessage into it
-					const allIframes = document.body.querySelectorAll("iframe");
-					const iframe = allIframes[allIframes.length - 1];
-					if (event.data.action === "input") {
-						await updatePage(event.data.story);
-					} else if (
-						["published", "unpublished"].includes(event.data.action)
-					) {
-						location.reload();
-					}
-					iframe.contentWindow.postMessage(event.data, "*");
-				}
-			});
-
-			const updatePage = async function (story) {
-				const iframe = document.createElement("iframe");
-				iframe.srcdoc = await fetchAstroPage(story);
-				document.body.appendChild(iframe);
-			};
+			init();
 		</script>
 	</body>
 </html>
