@@ -1,7 +1,6 @@
 export const fetchAstroPage = async (content) => {
   const result = await fetch(
     window.location.href
-      .replace("/storyblok-preview?", "/?") // for index pages
       .replace("/storyblok-preview", "/"),  // for nested pages
     content
       ? {

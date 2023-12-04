@@ -19,6 +19,7 @@
   "dependencies": {
     "@astrojs/node": "^6.0.3",
     "@storyblok/astro": "./@storyblok-astro/lib",
-    "@storyblok/js": "^2.3.0"
+    "@storyblok/js": "^2.3.0",
+    "camelcase": "^8.0.0"
   }
 }
