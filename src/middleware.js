@@ -32,6 +32,7 @@ export function onRequest({ locals, request, context, params }, next) {
   if (request['method'] === 'POST') {
     const requestBody = getRequestBody(request);
 
+    // is_storyblok_preview is set in `fetchAstroPage` in `src/js/preview/fetchAstroPage.js`
     if (requestBody && requestBody['is_storyblok_preview']) {
       locals['_storybook_preview_data'] = requestBody;
     }
