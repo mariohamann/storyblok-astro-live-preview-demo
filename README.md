@@ -1,5 +1,13 @@
 # Storyblok Astro Live Preview
 
+## General
+
+This repository shows how to use Storyblok's Live Editing capabilities in combination with Astro.
+
+It follows the main principle: The server (= Astro) is right about what to render and therefore we don't try to fight with DOM morphing etc.
+
+This makes the author experience less snappy in comparison to SPA environments with e. g. Nuxt or SvelteKit (as the server always creates complete new pages which then have to be completely rendered by the browser ON EVERY CHANGE), but on the other hand provides high robustness and makes stuff a lot more predictable.
+
 ## Setup
 
 1. Storyblok: Setup a Storyblok space as outlined here https://www.storyblok.com/docs/guide/getting-started
@@ -15,8 +23,6 @@
 > Note: I used `@storyblok/astro` as a base, but did override the `injectScript` function, as it didn't play well with this setup. I manually initialized the `StorybookBridge` in `src/home.astro`.
 
 ## Overview
-
-The setup involves several files across the Astro project which are crucial for integrating the Storyblok live preview with the Astro rendered pages. These files manage the communication between Storyblok's editing interface and the Astro front-end, ensuring real-time updates and rendering of content changes.
 
 ### 1. Role of `src/pages/storyblok-preview/[...path].astro`
 
