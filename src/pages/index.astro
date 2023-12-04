@@ -3,19 +3,23 @@ import { useStoryblokApi } from "@storyblok/astro";
 import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
 
 const storyblokApi = useStoryblokApi();
-const { data } = await storyblokApi.get("cdn/stories/home", {
-	version: "draft",
-});
 
+let story;
 let storyId = "";
 
-// Override the original Story data with date coming from the editor through middleware.js
+// Check if the Story data is available in Astro.locals (coming from middleware.js)
 if (Astro.locals["_storybook_preview_data"]) {
-	data.story = Astro.locals["_storybook_preview_data"];
-	storyId = data.story.id;
-}
+	story = Astro.locals["_storybook_preview_data"];
+	storyId = story.id;
+} else {
+	// Fetch the story from the API if it's not available in Astro.locals
+	const { data } = await storyblokApi.get("cdn/stories/home", {
+		version: "draft",
+	});
 
-const story = data.story;
+	story = data.story;
+	storyId = story.id;
+}
 ---
 
 <html lang='en'>
