@@ -32,9 +32,7 @@ if (Astro.locals["_storybook_preview_data"]) {
 
 		<script>
 			import { setupSourceEventsManager } from "../js/source/eventsManager";
-			import { setupSourceIFrameManager } from "../js/source/iFrameManager";
 			await setupSourceEventsManager();
-			await setupSourceIFrameManager();
 		</script>
 		<script define:vars={{ storyId }}>
 			// This block is needed to let Storyblok manager work, as it is looking for the parameter in the URL

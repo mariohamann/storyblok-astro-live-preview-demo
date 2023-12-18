@@ -17,6 +17,9 @@ dependencies:
   camelcase:
     specifier: ^8.0.0
     version: 8.0.0
+  iframe-swapper:
+    specifier: ^1.1.1
+    version: 1.1.1
 
 devDependencies:
   '@astrojs/tailwind':
@@ -1770,6 +1773,10 @@ packages:
 
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
+
+  /iframe-swapper@1.1.1:
+    resolution: {integrity: sha512-heXH7SCq2l4bazcuJgbDo4uMYP6fG0f6Kt+2ZSm31YXtu/iiPX9MzSn9IqngRcknkd2715aWPPacxmw1E4xPtg==}
+    dev: false
 
   /import-meta-resolve@3.1.1:
     resolution: {integrity: sha512-qeywsE/KC3w9Fd2ORrRDUw6nS/nLwZpXgfrOc2IILvZYnCaEMd+D56Vfg9k4G29gIeVi3XKql1RQatME8iYsiw==}

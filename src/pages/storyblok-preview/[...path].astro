@@ -11,18 +11,11 @@
 			body {
 				margin: 0;
 				padding: 0;
-			}
-			iframe {
-				width: 100%;
 				height: 100vh;
-				border: none;
-				position: absolute;
-			}
-			iframe:not(:first-of-type) {
-				opacity: 0%;
 			}
 		</style>
 		<script>
+			import "iframe-swapper";
 			import { setupPreviewEventsManager } from "../../js/preview/eventsManager";
 			import { setupPreviewIFrameManager } from "../../js/preview/iFrameManager.js";
 
@@ -30,5 +23,7 @@
 			await setupPreviewIFrameManager();
 		</script>
 	</head>
-	<body> </body>
+	<body>
+		<iframe-swapper swap-delay='100'></iframe-swapper>
+	</body>
 </html>

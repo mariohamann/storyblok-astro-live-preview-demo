@@ -14,7 +14,7 @@ This makes the author experience less snappy in comparison to SPA environments w
 2. Code: Setup an `.env` file with `STORYBLOK_TOKEN = <your token>`
 3. Storyblok: Setup `Settings -> Visual Editor`:
     - `https://localhost:4321/` as "Location"
-    - `https://localhost:4321/storyblok-preview` as "Preview URL"
+    - `https://localhost:4321/storyblok-preview/` as "Preview URL"
 4. Code: Install dependencies via `pnpm i` (`pnpm` is currently needed as I overrode some stuff in `@storyblok/astro` but didn't want rewrite everything there.)
 5. Code: `pnpm dev` to start the dev server
 6. Storyblok: Switch to the `Home` Story and switch to the `https://localhost:4321/storyblok-preview` preview URL
@@ -41,7 +41,6 @@ This makes the author experience less snappy in comparison to SPA environments w
 -   **Preview `eventsManager`**: Manages the communication between the Storyblok editor and the preview iframe. It listens for messages from Storyblok and forwards them to the iframe, and vice versa.
 -   **Source `eventsManager`**: Overrides the default message routing to ensure that messages from the Storyblok editor are correctly received and handled within the source environment.
 
-### 4. Role of the `iFrameManager` in Preview and Source
+### 4. Role of the `iFrameManager` in Preview
 
--   **Preview `iFrameManager`**: Responsible for creating and managing iframes in the preview environment. It handles the loading of new content and the transition between old and new iframes, maintaining the user's scroll position.
--   **Source `iFrameManager`**: Manages events related to the iframe in the source environment, particularly signaling when an iframe is fully loaded and ready to display updated content.
+-   **Preview `iFrameManager`**: Responsible for initializing and updating iframes in the preview environment. It uses [iframe-swapper](https://www.npmjs.com/package/iframe-swapper), which handles the transition between old and new iframes and maintains the user's scroll position.
